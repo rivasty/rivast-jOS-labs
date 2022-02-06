@@ -1,0 +1,4 @@
+1. MPBOOTPHYS returns the absolute address of the boot_ap code for each AP. If it is not used in MPENTRY, then the link address and load address will not be correct and the AP will page fault.
+2. If there was a shared kernel stack, we'd get some funky results with the stack because you have to enter the kernel before you can lock the kernel.
+3. e is allocated on the kernel stack which isn't affected by lcr3()
+4. We save the old environment registers because that environment may need to be run later or by a different cpu. They are saved in the environment's trapframe, and can be popped off when needed to be run by another cpu.

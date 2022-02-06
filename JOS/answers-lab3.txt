@@ -1,0 +1,5 @@
+[ANSWERS-LAB3]
+1. If we use seperate handler functions for each exception/interupt, we can have different ways of handling certain things if we want. Otherwise all exceptions have the same handler and can not be overwritten by the user.
+2. I did not have to do anything. This is because DPL is set to 0 on the handler, and the CPU will call a General Protection Fault.
+3. For breakpoints to work the DPL for the breakpoint handler needs to be set to 3, allowing the user to invoke the handler.
+4. To prevent the user from invoking these interupts and messing with the kernal.

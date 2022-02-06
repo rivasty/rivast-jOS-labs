@@ -1,0 +1,53 @@
+1:
+Assuming that the following JOS kernel code is correct, 
+what type should variable x have, uintptr_t or physaddr_t?
+
+mystery_t x;
+char* value = return_a_pointer();
+*value = 10;
+x = (mystery_t) value;
+x should be uintptr_t
+
+2:
+ENTRY | BASE VA    | POINTS TO
+1033  | 0xffc00000 | Page table for Top 4MB physical memory
+1032  | 0xff800000 | Page table for next 4MB physical memory
+.     | .          | .
+960   | 0xf0000000 | KERNBASE
+959   | 0xefc00000 | KSTACKTOP
+958   | 0xef800000 | ULIM
+957   | 0xef400000 | UVPT
+956   | 0xef000000 | UPAGES
+.     | .          | .
+2     | 0x00800000 | unmapped
+1     | 0x00400000 | unmapped
+0     | 0x00000000 | unmapped
+
+3:
+We have placed the kernel and user environment in the
+same address space. Why will user programs not be able 
+to read or write the kernel’s memory? What specific 
+mechanisms protect the kernel memory?
+The user can only write to address where the PTE_U bit is enabled.
+Kernel memory does not have this bit enabled.
+4:
+What is the maximum amount of physical memory that 
+this operating system can support? Why?
+2GB. UPAGES is 4MB in size, each PageInfo struct is 8 bytes.
+In UPAGES, can fit 524288 pages, each corresponding to a
+4096 byte segment of memory, 524288 * 4096 = 2GB.
+5:
+How much space overhead is there for managing memory,
+if we actually had the maximum amount of physical memory? 
+How is this overhead broken down?
+4MB for PageInfo structs, 2MB for page tables, and 4k for the page directory.
+6MB + 4k. 
+6:
+Revisit the page table setup in kern/entry.S and 
+kern/entrypgdir.c. Immediately after we turn on paging, 
+EIP is still a low number (a little over 1MB). At what 
+point do we transition to running at an EIP above KERNBASE? 
+What makes it possible for us to continue executing at a 
+low EIP between when we enable paging and when we begin 
+running at an EIP above KERNBASE? Why is this transition 
+necessary?
